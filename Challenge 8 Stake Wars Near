@@ -1,0 +1,29 @@
+Install cargo and Rust in case you don't have it. This command is for Linux or MacOS.
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+source $HOME/.cargo/env
+
+Add the wasm32-unknown-unknown toolchain
+rustup target add wasm32-unknown-unknown
+
+Clone the project
+git clone https://github.com/zavodil/near-staking-pool-owner
+
+Compile smart contract
+cd near-staking-pool-owner/contract
+rustup target add wasm32-unknown-unknown
+cargo build --target wasm32-unknown-unknown --release
+
+Deploy smart contract on your owner account. Adjust the path to .wasm file if required.
+replace xx with your wallet name
+NEAR_ENV=shardnet near deploy xx.shardnet.near --wasmFile target/wasm32-unknown-unknown/release/contract.wasm
+
+Replace .. with your wallet name, ..1 can fill in my wallet name (byantium.shardnet.near)/your friends, for ..2 you can fill in your own wallet name
+CONTRACT_ID=xx.shardnet.near
+
+# Change numerator and denomitor to adjust the % for split.
+near call $CONTRACT_ID new '{"staking_pool_account_id": "xx.factory.shardnet.near", "owner_id":"xx.shardnet.near", "reward_receivers": [["xx1.shardnet.near", {"numerator": 3, "denominator":10}], ["xx2.shardnet.near", {"numerator": 70, "denominator":100}]]}' --accountId $CONTRACT_ID
+
+Wait until you start receiving rewards on your node staking pool. Do a withdraw of rewards.
+
+CONTRACT_ID=xx.shardnet.near
+NEAR_ENV=shardnet near call $CONTRACT_ID withdraw '{}' --accountId $CONTRACT_ID --gas 200000000000000
