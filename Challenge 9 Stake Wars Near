@@ -1,0 +1,31 @@
+Tujuan 2 - Membuka Port 3030 untuk pelaporan Diagnostik
+Periksa untuk melihat apakah PORT 3030 terbuka
+sudo iptables -L | grep 3030
+Buka port jika tidak terbuka
+sudo iptables -A INPUT -p tcp --dport 3030 -j ACCEPT
+Simpan konfigurasi untuk restart server
+
+Anda dapat menggunakan salah satu dari 2 solusi:
+Menggunakan iptables-persistent
+sudo apt install iptables-persistent
+
+atau jika sudah terpasang
+sudo dpkg-reconfigure iptables-persistent
+
+Menggunakan file
+iptables-save > /etc/iptables/rules.v4
+ip6tables-save > /etc/iptables/rules.v6
+
+Validasi port terbuka dengan mengunjungi
+http://:3030/status
+
+CATATAN: Dalam beberapa kasus, port mungkin juga perlu dibuka di firewall penyedia cloud/pusat data Anda.
+
+Kriteria penerimaan:
+Pelaporan validator di atas 70%
+Port can be accessed publicly http://<IP Address>:3030/status
+
+Pengajuan tantangan
+
+URL Tantangan: Tautan ke port 3030 port Anda
+Gambar tantangan: Tangkapan layar waktu aktif dari Papan Peringkat
